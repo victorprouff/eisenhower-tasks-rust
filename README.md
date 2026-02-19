@@ -83,9 +83,17 @@ xattr -cr "/Applications/Eisenhower Tasks.app"
 
 ## Publier une nouvelle version
 
-```bash
-git tag v1.x.0
-git push origin v1.x.0
-```
+1. Mettre à jour la version dans `src-tauri/tauri.conf.json` :
+   ```json
+   "version": "1.x.0",
+   ```
+
+2. Commiter, tagger et pousser :
+   ```bash
+   git add src-tauri/tauri.conf.json
+   git commit -m "chore: bump version to 1.x.0"
+   git tag v1.x.0
+   git push origin main && git push origin v1.x.0
+   ```
 
 Le workflow GitHub Actions build automatiquement pour macOS (arm64 + x64), Windows et Linux, puis publie la release.
