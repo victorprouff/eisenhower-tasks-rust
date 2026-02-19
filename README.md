@@ -14,6 +14,7 @@ Portage de la version Electron vers Tauri pour un binaire plus léger et perform
 - **Thème clair/sombre** : bascule avec persistance (localStorage)
 - **Raccourci clavier** : `Cmd/Ctrl+N` pour focus sur l'input
 - **Persistance** : sauvegarde JSON sur disque (app data dir)
+- **Mises à jour automatiques** : vérification au démarrage + bouton 🔄 dans la barre de titre
 
 ## Architecture
 
@@ -25,7 +26,7 @@ eisenhower-tasks-rust/
 │   ├── build.rs              # Script de build Tauri
 │   └── src/
 │       ├── main.rs           # Point d'entrée
-│       └── lib.rs            # Commands Tauri : load_tasks, save_tasks
+│       └── lib.rs            # Commands Tauri : load_tasks, save_tasks, check_for_updates, install_update
 ├── src/                      # Frontend
 │   ├── index.html            # Interface (matrice + sidebars)
 │   ├── styles.css            # Styles (thème clair/sombre, animations)
@@ -61,3 +62,30 @@ Les bundles sont générés dans `src-tauri/target/release/bundle/` :
 - **macOS** : `.app` + `.dmg`
 - **Windows** : NSIS installer
 - **Linux** : AppImage + `.deb`
+
+## Télécharger
+
+Les releases sont disponibles sur la [page GitHub Releases](https://github.com/victorprouff/eisenhower-tasks-rust/releases). L'application se met à jour automatiquement dès qu'une nouvelle version est publiée.
+
+### macOS — premier lancement
+
+L'app n'étant pas notarisée par Apple, Gatekeeper bloque l'exécution au premier lancement. Deux options :
+
+**Option 1 — clic droit**
+
+Clic droit sur l'app → **Ouvrir** → **Ouvrir quand même**. macOS mémorise le choix, l'avertissement ne réapparaît plus.
+
+**Option 2 — Terminal**
+
+```bash
+xattr -cr "/Applications/Eisenhower Tasks.app"
+```
+
+## Publier une nouvelle version
+
+```bash
+git tag v1.x.0
+git push origin v1.x.0
+```
+
+Le workflow GitHub Actions build automatiquement pour macOS (arm64 + x64), Windows et Linux, puis publie la release.
