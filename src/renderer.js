@@ -337,10 +337,25 @@ function showUpdateModal(info) {
 // Écouter la détection automatique au démarrage
 if (window.__TAURI__) {
   window.__TAURI__.event.listen('update-available', (event) => {
-    updateBtn.style.display = 'block';
     updateBadge.style.display = 'block';
     updateBtn._pendingInfo = event.payload;
   });
+
+  // Vérification de secours : si l'événement Rust est émis avant le listener,
+  // on revérifie après un court délai
+  setTimeout(async () => {
+    if (!updateBtn._pendingInfo) {
+      try {
+        const info = await window.__TAURI__.core.invoke('check_for_updates');
+        if (info.available) {
+          updateBadge.style.display = 'block';
+          updateBtn._pendingInfo = info;
+        }
+      } catch (e) {
+        // silencieux, c'est une vérification de fond
+      }
+    }
+  }, 3000);
 }
 
 // Clic sur le bouton de mise à jour

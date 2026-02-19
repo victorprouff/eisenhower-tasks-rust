@@ -1,6 +1,6 @@
 {
   "name": "eisenhower-tasks-rust",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Matrice d'Eisenhower - Tauri App",
   "scripts": {
     "tauri": "tauri",
