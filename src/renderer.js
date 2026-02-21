@@ -2,6 +2,7 @@
 let tasks = [];
 let draggedTask = null;
 let dragCounter = 0;
+let undoPending = null; // { task, index, timeout }
 
 // Éléments DOM
 const taskInput = document.getElementById('taskInput');
@@ -33,6 +34,17 @@ function setupEventListeners() {
 
   // Supprimer toutes les tâches
   document.getElementById('clearTasks').addEventListener('click', removeAllTasks);
+
+  // Annuler la dernière suppression
+  document.getElementById('undoBtn').addEventListener('click', () => {
+    if (!undoPending) return;
+    clearTimeout(undoPending.timeout);
+    tasks.splice(Math.min(undoPending.index, tasks.length), 0, undoPending.task);
+    undoPending = null;
+    saveTasks();
+    render();
+    document.getElementById('undoToast').classList.remove('visible');
+  });
 
   // Bouton import
   document.getElementById('importBtn').addEventListener('click', () => {
@@ -191,11 +203,34 @@ function addTask() {
   render();
 }
 
-// Supprimer une tâche
-function deleteTask(id) {
-  tasks = tasks.filter(task => task.id !== id);
+// Confirme la suppression en attente (si existante)
+function confirmPendingDelete() {
+  if (!undoPending) return;
+  clearTimeout(undoPending.timeout);
   saveTasks();
-  render();
+  undoPending = null;
+  document.getElementById('undoToast').classList.remove('visible');
+}
+
+// Supprimer une tâche (avec undo pendant 10s)
+function deleteTask(id) {
+  confirmPendingDelete();
+
+  const index = tasks.findIndex(t => t.id === id);
+  const task = tasks[index];
+  tasks = tasks.filter(t => t.id !== id);
+  render(); // affiche sans la tâche, sans sauvegarder
+
+  const toast = document.getElementById('undoToast');
+  toast.classList.add('visible');
+
+  const timeout = setTimeout(() => {
+    undoPending = null;
+    saveTasks();
+    toast.classList.remove('visible');
+  }, 10000);
+
+  undoPending = { task, index, timeout };
 }
 
 // Modifier le texte d'une tâche
@@ -222,6 +257,7 @@ function toggleTaskComplete(id) {
 }
 
 function removeAllTasks() {
+  confirmPendingDelete();
   const modal = document.getElementById('confirmModal');
   modal.classList.add('visible');
 
