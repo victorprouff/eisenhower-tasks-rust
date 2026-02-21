@@ -466,6 +466,20 @@ body.dark-theme .theme-toggle:hover {
   pointer-events: auto;
 }
 
+/* Édition inline d'une tâche */
+.task-edit-input {
+  flex: 1;
+  border: none;
+  border-bottom: 2px solid #007aff;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  padding: 0;
+  min-width: 0;
+}
+
 /* Tâche complétée */
 .task-item.completed {
   opacity: 0.5;

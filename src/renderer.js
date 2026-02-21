@@ -60,6 +60,20 @@ function deleteTask(id) {
   render();
 }
 
+// Modifier le texte d'une tâche
+function editTask(id, newText) {
+  const trimmed = newText.trim();
+  if (!trimmed) return false;
+  const task = tasks.find(t => t.id === id);
+  if (task && task.text !== trimmed) {
+    task.text = trimmed;
+    saveTasks();
+    render();
+    return true;
+  }
+  return false;
+}
+
 function toggleTaskComplete(id) {
   const task = tasks.find(t => t.id === id);
   if (task) {
@@ -116,6 +130,44 @@ function createTaskElement(task, isDraggable = true) {
   const textSpan = document.createElement('span');
   textSpan.className = 'task-text';
   textSpan.textContent = task.text;
+  textSpan.title = 'Double-cliquer pour modifier';
+
+  textSpan.addEventListener('dblclick', (e) => {
+    e.stopPropagation();
+    if (isDraggable) taskEl.draggable = false;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'task-edit-input';
+    input.value = task.text;
+    textSpan.replaceWith(input);
+    input.focus();
+    input.select();
+
+    let committed = false;
+    const commit = () => {
+      if (committed) return;
+      committed = true;
+      const changed = editTask(task.id, input.value);
+      if (!changed) {
+        input.replaceWith(textSpan);
+        if (isDraggable) taskEl.draggable = true;
+      }
+      // si changed = true, render() est appelé et reconstruit le DOM
+    };
+    const cancel = () => {
+      if (committed) return;
+      committed = true;
+      input.replaceWith(textSpan);
+      if (isDraggable) taskEl.draggable = true;
+    };
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); commit(); }
+      if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+    });
+    input.addEventListener('blur', commit);
+  });
 
   const deleteBtn = document.createElement('button');
   deleteBtn.className = 'task-delete';
