@@ -214,7 +214,7 @@ body.dark-theme {
   border-left: 3px solid transparent;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .task-item:hover {
@@ -645,6 +645,82 @@ body.dark-theme .theme-toggle:hover {
   padding: 16px 32px;
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+/* Section export (bas de la colonne droite) */
+.export-section {
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+#exportBtn {
+  width: 100%;
+  padding: 10px;
+  background: var(--task-bg);
+  color: var(--text-secondary);
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#exportBtn:hover {
+  border-color: #007aff;
+  color: #007aff;
+  background: var(--input-bg);
+}
+
+/* Modale élargie pour l'export */
+.modal-export {
+  max-width: 520px;
+}
+
+/* Bouton neutre (gris → bleu au survol) */
+.modal-btn-neutral {
+  background: var(--task-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+.modal-btn-neutral:hover {
+  background: #007aff;
+  color: white;
+  border-color: #007aff;
+}
+
+/* Bouton action (gris → vert au survol) */
+.modal-btn-action {
+  background: var(--task-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+.modal-btn-action:hover {
+  background: #34c759;
+  color: white;
+  border-color: #34c759;
+}
+
+/* Toast de confirmation */
+.export-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: #34c759;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 4000;
+}
+.export-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Barre de progression */

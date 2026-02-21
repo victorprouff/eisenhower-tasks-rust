@@ -117,6 +117,9 @@
           <div class="priority-tasks" id="priority-4"></div>
         </div>
       </div>
+      <div class="export-section">
+        <button id="exportBtn">Exporter</button>
+      </div>
     </aside>
   </div>
 
@@ -149,6 +152,19 @@
       </div>
     </div>
   </div>
+
+  <div class="modal-overlay" id="exportModal">
+    <div class="modal modal-export">
+      <h3 style="margin-bottom:20px;font-size:16px;">Exporter la liste</h3>
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-cancel" id="exportModalClose">Annuler</button>
+        <button class="modal-btn modal-btn-neutral" id="exportClipboard">Copier dans le presse-papier</button>
+        <button class="modal-btn modal-btn-action" id="exportMarkdown">Télécharger .md</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="export-toast" id="exportToast">Fichier enregistré !</div>
 
   <script src="renderer.js"></script>
 </body>

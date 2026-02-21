@@ -17,13 +17,15 @@ Portage de la version Electron vers Tauri pour un binaire plus léger et perform
 - **Mises à jour automatiques** : vérification au démarrage + bouton 🔄 dans la barre de titre
 - **Édition inline** : double-cliquer sur une tâche pour modifier son texte (Entrée pour valider, Échap pour annuler)
 - **Import de tâches** : importer une liste depuis un fichier `.txt`/`.md` (bouton, drag & drop sur la fenêtre, ou coller une liste multiligne). Supporte le format markdown (`- [ ]`, `- [x]`, `-`)
+- **Export markdown** : exporter la liste priorisée en `.md` (copie presse-papier ou sauvegarde avec boîte de dialogue native)
 
 ## TODO :
 
 - [x] **Mises à jour automatiques** : vérification au démarrage + bouton 🔄 dans la barre de titre
 - [x] **Édition inline** : double-cliquer sur une tâche pour modifier son texte (Entrée pour valider, Échap pour annuler)
 - [x] **Import de tâches** : bouton "Importer une liste", drag & drop fichier, ou coller une liste multiligne
-- [ ] Possibilité d'exporter la liste ordonnée suivant un ordre précis
+- [x] **Export markdown** : bouton "Exporter" en bas de la liste priorisée (copie presse-papier ou téléchargement avec dialog natif)
+- [ ] Le bouton de suppression des tâches doit être toujours au même endroit en haut à droite de la tâche peu importe la taille de la tâche
 - Le bouton d'export est grisé tant qu'il n'y a pas de tâche
 - Pouvoir rajouter une date et une heure au tâche. Valeur modifiable
 - Pouvoir rajouter une durée
@@ -42,7 +44,7 @@ eisenhower-tasks-rust/
 │   ├── build.rs              # Script de build Tauri
 │   └── src/
 │       ├── main.rs           # Point d'entrée
-│       └── lib.rs            # Commands Tauri : load_tasks, save_tasks, check_for_updates, install_update
+│       └── lib.rs            # Commands Tauri : load_tasks, save_tasks, check_for_updates, install_update, save_markdown
 ├── src/                      # Frontend
 │   ├── index.html            # Interface (matrice + sidebars)
 │   ├── styles.css            # Styles (thème clair/sombre, animations)

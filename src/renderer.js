@@ -71,6 +71,28 @@ function setupEventListeners() {
     }
   });
 
+  // Export
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    document.getElementById('exportModal').classList.add('visible');
+  });
+  document.getElementById('exportModalClose').addEventListener('click', () => {
+    document.getElementById('exportModal').classList.remove('visible');
+  });
+  document.getElementById('exportClipboard').addEventListener('click', () => {
+    navigator.clipboard.writeText(generateExportContent());
+    document.getElementById('exportModal').classList.remove('visible');
+  });
+  document.getElementById('exportMarkdown').addEventListener('click', async () => {
+    const content = generateExportContent();
+    document.getElementById('exportModal').classList.remove('visible');
+    try {
+      const saved = await window.__TAURI__.core.invoke('save_markdown', { content });
+      if (saved) showExportToast();
+    } catch (e) {
+      console.error('Erreur export:', e);
+    }
+  });
+
   // Paste multiligne
   document.addEventListener('paste', (e) => {
     if (e.target.classList.contains('task-edit-input')) return;
@@ -82,6 +104,32 @@ function setupEventListeners() {
       importTaskLines(lines);
     }
   });
+}
+
+// Génère le contenu markdown de l'export
+function generateExportContent() {
+  const sections = [
+    { label: 'Non trié',                            tasks: tasks.filter(t => !t.quadrant) },
+    { label: 'Faire immédiatement',                 tasks: tasks.filter(t => t.quadrant === 1) },
+    { label: 'Planifier',                           tasks: tasks.filter(t => t.quadrant === 2) },
+    { label: 'Faire si on a le temps',              tasks: tasks.filter(t => t.quadrant === 3) },
+    { label: 'À piocher si on a le temps et envie', tasks: tasks.filter(t => t.quadrant === 4) },
+  ];
+
+  return sections
+    .filter(s => s.tasks.length > 0)
+    .map(s => {
+      const lines = s.tasks.map(t => `- [${t.completed ? 'x' : ' '}] ${t.text}`);
+      return `## ${s.label}\n\n${lines.join('\n')}`;
+    })
+    .join('\n\n');
+}
+
+// Affiche le toast de confirmation d'export
+function showExportToast() {
+  const toast = document.getElementById('exportToast');
+  toast.classList.add('visible');
+  setTimeout(() => toast.classList.remove('visible'), 2500);
 }
 
 // Parse le texte brut en [{text, completed}]

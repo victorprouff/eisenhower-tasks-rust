@@ -42,6 +42,31 @@ fn save_tasks(app: tauri::AppHandle, tasks: Vec<Task>) -> Result<(), String> {
     Ok(())
 }
 
+#[tauri::command]
+async fn save_markdown(content: String) -> Result<bool, String> {
+    #[cfg(not(any(target_os = "android", target_os = "ios")))]
+    {
+        let file = rfd::AsyncFileDialog::new()
+            .set_file_name("eisenhower-tasks.md")
+            .add_filter("Markdown", &["md"])
+            .save_file()
+            .await;
+
+        return match file {
+            Some(handle) => {
+                handle
+                    .write(content.as_bytes())
+                    .await
+                    .map_err(|e| e.to_string())?;
+                Ok(true)
+            }
+            None => Ok(false),
+        };
+    }
+    #[cfg(any(target_os = "android", target_os = "ios"))]
+    Err("Not supported on mobile".to_string())
+}
+
 // Updater types
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpdateInfo {
@@ -161,7 +186,8 @@ pub fn run() {
             load_tasks,
             save_tasks,
             check_for_updates,
-            install_update
+            install_update,
+            save_markdown
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
