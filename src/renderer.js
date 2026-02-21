@@ -3,13 +3,10 @@ let tasks = [];
 let draggedTask = null;
 let dragCounter = 0;
 let undoPending = null; // { task, index, timeout }
-const DEFAULT_QUADRANT_NAMES = [
-  "Faire immédiatement",
-  "Planifier",
-  "Déléguer - Annuler si pas le temps",
-  "À piocher si on en a envie et le temps",
-];
-let quadrantNames = [...DEFAULT_QUADRANT_NAMES];
+function getDefaultQuadrantNames() {
+  return [t('q1_default'), t('q2_default'), t('q3_default'), t('q4_default')];
+}
+let quadrantNames = null;
 
 // Éléments DOM
 const taskInput = document.getElementById('taskInput');
@@ -19,6 +16,7 @@ const dropZones = document.querySelectorAll('.quadrant-tasks');
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', async () => {
+  applyTranslations();
   await loadTasks();
   await loadSettings();
   setupEventListeners();
@@ -97,6 +95,11 @@ function setupEventListeners() {
     }
   });
 
+  // Sélecteur de langue
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => setLang(btn.dataset.lang));
+  });
+
   // Settings
   document.getElementById('settingsBtn').addEventListener('click', () => {
     document.getElementById('qName1').value = quadrantNames[0];
@@ -109,7 +112,7 @@ function setupEventListeners() {
     document.getElementById('settingsOverlay').classList.remove('visible');
   });
   document.getElementById('settingsReset').addEventListener('click', () => {
-    DEFAULT_QUADRANT_NAMES.forEach((name, i) => {
+    getDefaultQuadrantNames().forEach((name, i) => {
       document.getElementById(`qName${i + 1}`).value = name;
     });
   });
@@ -162,11 +165,11 @@ function setupEventListeners() {
 // Génère le contenu markdown de l'export
 function generateExportContent() {
   const sections = [
-    { label: 'Non trié',                            tasks: tasks.filter(t => !t.quadrant) },
-    { label: 'Faire immédiatement',                 tasks: tasks.filter(t => t.quadrant === 1) },
-    { label: 'Planifier',                           tasks: tasks.filter(t => t.quadrant === 2) },
-    { label: 'Faire si on a le temps',              tasks: tasks.filter(t => t.quadrant === 3) },
-    { label: 'À piocher si on a le temps et envie', tasks: tasks.filter(t => t.quadrant === 4) },
+    { label: t('export_unsorted'), tasks: tasks.filter(t => !t.quadrant) },
+    { label: t('export_q1'),       tasks: tasks.filter(t => t.quadrant === 1) },
+    { label: t('export_q2'),       tasks: tasks.filter(t => t.quadrant === 2) },
+    { label: t('export_q3'),       tasks: tasks.filter(t => t.quadrant === 3) },
+    { label: t('export_q4'),       tasks: tasks.filter(t => t.quadrant === 4) },
   ];
 
   return sections
@@ -345,7 +348,7 @@ function createTaskElement(task, isDraggable = true) {
   const textSpan = document.createElement('span');
   textSpan.className = 'task-text';
   textSpan.textContent = task.text;
-  textSpan.title = 'Double-cliquer pour modifier';
+  textSpan.title = t('task_edit_tooltip');
 
   textSpan.addEventListener('dblclick', (e) => {
     e.stopPropagation();
@@ -481,7 +484,7 @@ function render() {
     .sort((a, b) => a.completed - b.completed);
 
   if (unassignedTasks.length === 0) {
-    taskList.innerHTML = '<div class="empty-state">Aucune tâche en attente</div>';
+    taskList.innerHTML = `<div class="empty-state">${t('empty_unassigned')}</div>`;
   } else {
     unassignedTasks.forEach(task => {
       taskList.appendChild(createTaskElement(task));
@@ -496,7 +499,7 @@ function render() {
     const zone = document.querySelector(`[data-drop-zone="${i}"]`);
 
     if (quadrantTasks.length === 0) {
-      zone.innerHTML = '<div class="empty-state">Glissez une tâche ici</div>';
+      zone.innerHTML = `<div class="empty-state">${t('empty_quadrant')}</div>`;
     } else {
       quadrantTasks.forEach(task => {
         zone.appendChild(createTaskElement(task));
@@ -516,7 +519,7 @@ function renderPriorityList() {
           .sort((a, b) => a.completed === b.completed ? 0 : a.completed ? 1 : -1);
 
     if (quadrantTasks.length === 0) {
-      priorityContainer.innerHTML = '<div class="empty-state">Aucune tâche</div>';
+      priorityContainer.innerHTML = `<div class="empty-state">${t('empty_priority')}</div>`;
     } else {
       quadrantTasks.forEach(task => {
         priorityContainer.appendChild(createTaskElement(task, false));
@@ -550,7 +553,7 @@ async function loadSettings() {
     const s = await window.__TAURI__.core.invoke('load_settings');
     quadrantNames = s.quadrant_names;
   } catch (e) {
-    // garder les défauts
+    quadrantNames = getDefaultQuadrantNames();
   }
   applyQuadrantNames();
 }
@@ -559,6 +562,16 @@ function applyQuadrantNames() {
   document.querySelectorAll('.quadrant h3').forEach((el, i) => {
     el.textContent = quadrantNames[i];
   });
+}
+
+function resetQuadrantNamesToDefaults() {
+  quadrantNames = getDefaultQuadrantNames();
+  for (let i = 0; i < 4; i++) {
+    const input = document.getElementById(`qName${i + 1}`);
+    if (input) input.value = quadrantNames[i];
+  }
+  saveSettings();
+  applyQuadrantNames();
 }
 
 async function saveSettings() {
@@ -633,7 +646,7 @@ const updateModalInstall = document.getElementById('updateModalInstall');
 let pendingUpdateInfo = null;
 
 function showUpdateModal() {
-  updateModalTitle.textContent = 'Mise à jour disponible';
+  updateModalTitle.textContent = t('update_available');
   updateModalVersion.textContent = pendingUpdateInfo.version ? `Version ${pendingUpdateInfo.version}` : '';
   updateModalNotes.textContent = pendingUpdateInfo.notes || '';
   updateProgress.style.display = 'none';
@@ -682,7 +695,7 @@ updateModalInstall.addEventListener('click', async () => {
   updateModalButtons.style.display = 'none';
   updateProgress.style.display = 'block';
   progressText.style.display = 'block';
-  progressText.textContent = 'Téléchargement en cours…';
+  progressText.textContent = t('update_downloading');
 
   let downloaded = 0;
   let total = null;
@@ -700,20 +713,20 @@ updateModalInstall.addEventListener('click', async () => {
         if (total) {
           const pct = Math.round((downloaded / total) * 100);
           progressFill.style.width = pct + '%';
-          progressText.textContent = `Téléchargement… ${pct}%`;
+          progressText.textContent = t('update_downloading_pct', pct);
         } else {
-          progressText.textContent = `Téléchargement… ${Math.round(downloaded / 1024)} Ko`;
+          progressText.textContent = t('update_downloading_kb', Math.round(downloaded / 1024));
         }
       } else if (event.event === 'finished') {
         progressFill.style.width = '100%';
-        progressText.textContent = 'Installation en cours…';
+        progressText.textContent = t('update_installing');
       }
     };
 
     await window.__TAURI__.core.invoke('install_update', { onEvent });
   } catch (e) {
     console.error('Erreur installation mise à jour:', e);
-    progressText.textContent = 'Erreur : ' + e;
+    progressText.textContent = t('update_error') + e;
     updateModalButtons.style.display = 'flex';
     updateModalInstall.style.display = 'none';
   }

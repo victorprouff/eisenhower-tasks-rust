@@ -9,8 +9,8 @@
 <body>
   <div class="titlebar">
     <span class="titlebar-text">EisenApp</span>
-    <div class="update-banner" id="updateBanner" style="display:none">Mise à jour disponible</div>
-    <button class="settings-btn" id="settingsBtn" title="Paramètres">
+    <div class="update-banner" id="updateBanner" style="display:none" data-i18n="update_banner">Mise à jour disponible</div>
+    <button class="settings-btn" id="settingsBtn" data-i18n-title="btn_settings_title" title="Paramètres">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
         <line x1="2" y1="4" x2="13" y2="4"/>
         <line x1="2" y1="7.5" x2="13" y2="7.5"/>
@@ -20,7 +20,7 @@
         <circle cx="6" cy="11" r="1.5" fill="var(--bg-secondary)"/>
       </svg>
     </button>
-    <button class="clear-tasks" id="clearTasks" title="Supprimer toutes les tâches">
+    <button class="clear-tasks" id="clearTasks" data-i18n-title="btn_clear_title" title="Supprimer toutes les tâches">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
         <line x1="1.5" y1="3.5" x2="13.5" y2="3.5"/>
         <path d="M4.5 3.5V2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v1.5"/>
@@ -29,27 +29,28 @@
         <line x1="9.25" y1="6.5" x2="9.25" y2="10.5"/>
       </svg>
     </button>
-    <button class="theme-toggle" id="themeToggle" title="Changer de thème"></button>
+    <button class="theme-toggle" id="themeToggle" data-i18n-title="btn_theme_title" title="Changer de thème"></button>
   </div>
   <div class="container">
     <!-- Colonne gauche : Ajout de tâches -->
     <aside class="sidebar left-sidebar">
       <div class="sidebar-header">
-        <h2>Nouvelle tâche</h2>
+        <h2 data-i18n="new_task">Nouvelle tâche</h2>
       </div>
       <div class="add-task-section">
         <input
           type="text"
           id="taskInput"
           placeholder="Entrez une tâche..."
+          data-i18n-placeholder="task_placeholder"
           autocomplete="off"
         >
-        <button id="addTaskBtn">Ajouter</button>
+        <button id="addTaskBtn" data-i18n="btn_add">Ajouter</button>
         <input type="file" id="importFileInput" accept=".txt,.md" style="display:none">
-        <button id="importBtn">Importer une liste</button>
+        <button id="importBtn" data-i18n="btn_import">Importer une liste</button>
       </div>
       <div class="unassigned-tasks" data-drop-zone="unassigned">
-        <h3>Tâches non assignées</h3>
+        <h3 data-i18n="unassigned_tasks">Tâches non assignées</h3>
         <div id="taskList" class="task-list"></div>
       </div>
     </aside>
@@ -61,7 +62,7 @@
         <div class="quadrant q1" data-quadrant="1">
           <div class="quadrant-header">
             <h3>Faire immédiatement</h3>
-            <span class="quadrant-label">Urgent & Important</span>
+            <span class="quadrant-label" data-i18n="q1_label">Urgent &amp; Important</span>
           </div>
           <div class="quadrant-tasks" data-drop-zone="1"></div>
         </div>
@@ -70,7 +71,7 @@
         <div class="quadrant q2" data-quadrant="2">
           <div class="quadrant-header">
             <h3>Planifier</h3>
-            <span class="quadrant-label">Important & Non urgent</span>
+            <span class="quadrant-label" data-i18n="q2_label">Important &amp; Non urgent</span>
           </div>
           <div class="quadrant-tasks" data-drop-zone="2"></div>
         </div>
@@ -79,7 +80,7 @@
         <div class="quadrant q3" data-quadrant="3">
           <div class="quadrant-header">
             <h3>Déléguer - Annuler si pas le temps</h3>
-            <span class="quadrant-label">Urgent & Non important</span>
+            <span class="quadrant-label" data-i18n="q3_label">Urgent &amp; Non important</span>
           </div>
           <div class="quadrant-tasks" data-drop-zone="3"></div>
         </div>
@@ -88,7 +89,7 @@
         <div class="quadrant q4" data-quadrant="4">
           <div class="quadrant-header">
             <h3>À piocher si on en a envie et le temps</h3>
-            <span class="quadrant-label">Non urgent & Non important</span>
+            <span class="quadrant-label" data-i18n="q4_label">Non urgent &amp; Non important</span>
           </div>
           <div class="quadrant-tasks" data-drop-zone="4"></div>
         </div>
@@ -99,42 +100,42 @@
     <!-- Colonne droite : Liste priorisée -->
     <aside class="sidebar right-sidebar">
       <div class="sidebar-header">
-        <h2>Liste priorisée</h2>
+        <h2 data-i18n="priority_list">Liste priorisée</h2>
       </div>
       <div class="prioritized-list">
         <div class="priority-section" data-priority="1">
-          <h3 class="priority-header q1-bg">Faire maintenant</h3>
+          <h3 class="priority-header q1-bg" data-i18n="priority_q1">Faire maintenant</h3>
           <div class="priority-tasks" id="priority-1"></div>
         </div>
         <div class="priority-section" data-priority="2">
-          <h3 class="priority-header q2-bg">Planifier</h3>
+          <h3 class="priority-header q2-bg" data-i18n="priority_q2">Planifier</h3>
           <div class="priority-tasks" id="priority-2"></div>
         </div>
         <div class="priority-section" data-priority="3">
-          <h3 class="priority-header q3-bg">Déléguer</h3>
+          <h3 class="priority-header q3-bg" data-i18n="priority_q3">Déléguer</h3>
           <div class="priority-tasks" id="priority-3"></div>
         </div>
         <div class="priority-section" data-priority="4">
-          <h3 class="priority-header q4-bg">À piocher</h3>
+          <h3 class="priority-header q4-bg" data-i18n="priority_q4">À piocher</h3>
           <div class="priority-tasks" id="priority-4"></div>
         </div>
       </div>
       <div class="export-section">
-        <button id="exportBtn">Exporter</button>
+        <button id="exportBtn" data-i18n="btn_export">Exporter</button>
       </div>
     </aside>
   </div>
 
   <div class="file-drop-overlay" id="fileDropOverlay">
-    <span class="file-drop-overlay-label">Déposer le fichier ici</span>
+    <span class="file-drop-overlay-label" data-i18n="file_drop_label">Déposer le fichier ici</span>
   </div>
 
   <div class="modal-overlay" id="confirmModal">
     <div class="modal">
-      <p>Êtes-vous sûr de vouloir supprimer toutes les tâches ?</p>
+      <p data-i18n="confirm_delete_all">Êtes-vous sûr de vouloir supprimer toutes les tâches ?</p>
       <div class="modal-buttons">
-        <button class="modal-btn modal-btn-cancel" id="confirmNo">Annuler</button>
-        <button class="modal-btn modal-btn-confirm" id="confirmYes">Supprimer</button>
+        <button class="modal-btn modal-btn-cancel" id="confirmNo" data-i18n="btn_cancel">Annuler</button>
+        <button class="modal-btn modal-btn-confirm" id="confirmYes" data-i18n="btn_delete">Supprimer</button>
       </div>
     </div>
   </div>
@@ -149,49 +150,57 @@
       </div>
       <p id="progressText" style="display:none;font-size:12px;text-align:center;color:var(--text-secondary);margin-top:6px;"></p>
       <div class="modal-buttons" id="updateModalButtons">
-        <button class="modal-btn modal-btn-cancel" id="updateModalClose">Plus tard</button>
-        <button class="modal-btn modal-btn-confirm" id="updateModalInstall">Installer</button>
+        <button class="modal-btn modal-btn-cancel" id="updateModalClose" data-i18n="update_later">Plus tard</button>
+        <button class="modal-btn modal-btn-confirm" id="updateModalInstall" data-i18n="update_install">Installer</button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay" id="exportModal">
     <div class="modal modal-export">
-      <h3 style="margin-bottom:20px;font-size:16px;">Exporter la liste</h3>
+      <h3 style="margin-bottom:20px;font-size:16px;" data-i18n="export_title">Exporter la liste</h3>
       <div class="modal-buttons">
-        <button class="modal-btn modal-btn-cancel" id="exportModalClose">Annuler</button>
-        <button class="modal-btn modal-btn-neutral" id="exportClipboard">Copier dans le presse-papier</button>
-        <button class="modal-btn modal-btn-action" id="exportMarkdown">Télécharger .md</button>
+        <button class="modal-btn modal-btn-cancel" id="exportModalClose" data-i18n="btn_export_cancel">Annuler</button>
+        <button class="modal-btn modal-btn-neutral" id="exportClipboard" data-i18n="btn_export_clipboard">Copier dans le presse-papier</button>
+        <button class="modal-btn modal-btn-action" id="exportMarkdown" data-i18n="btn_export_download">Télécharger .md</button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay" id="settingsOverlay">
     <div class="modal modal-settings">
-      <h3 style="margin-bottom:20px;font-size:16px;">Paramètres des quadrants</h3>
+      <h3 style="margin-bottom:20px;font-size:16px;" data-i18n="settings_title">Paramètres des quadrants</h3>
+      <div class="settings-lang">
+        <span data-i18n="language_label">Langue</span>
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="fr">FR</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
       <div class="settings-fields">
-        <label>Quadrant 1 — Urgent &amp; Important<input type="text" id="qName1"></label>
-        <label>Quadrant 2 — Important &amp; Non urgent<input type="text" id="qName2"></label>
-        <label>Quadrant 3 — Urgent &amp; Non important<input type="text" id="qName3"></label>
-        <label>Quadrant 4 — Non urgent &amp; Non important<input type="text" id="qName4"></label>
+        <label><span data-i18n="settings_q1_label">Quadrant 1 — Urgent &amp; Important</span><input type="text" id="qName1"></label>
+        <label><span data-i18n="settings_q2_label">Quadrant 2 — Important &amp; Non urgent</span><input type="text" id="qName2"></label>
+        <label><span data-i18n="settings_q3_label">Quadrant 3 — Urgent &amp; Non important</span><input type="text" id="qName3"></label>
+        <label><span data-i18n="settings_q4_label">Quadrant 4 — Non urgent &amp; Non important</span><input type="text" id="qName4"></label>
       </div>
       <div class="modal-buttons settings-modal-buttons">
-        <button class="modal-btn modal-btn-reset" id="settingsReset">Réinitialiser</button>
+        <button class="modal-btn modal-btn-reset" id="settingsReset" data-i18n="btn_reset">Réinitialiser</button>
         <div class="modal-buttons-right">
-          <button class="modal-btn modal-btn-cancel" id="settingsCancel">Annuler</button>
-          <button class="modal-btn modal-btn-confirm-green" id="settingsSave">Enregistrer</button>
+          <button class="modal-btn modal-btn-cancel" id="settingsCancel" data-i18n="btn_cancel">Annuler</button>
+          <button class="modal-btn modal-btn-confirm-green" id="settingsSave" data-i18n="btn_save">Enregistrer</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="export-toast" id="exportToast">Fichier enregistré !</div>
+  <div class="export-toast" id="exportToast" data-i18n="toast_file_saved">Fichier enregistré !</div>
 
   <div class="undo-toast" id="undoToast">
-    <span>Tâche supprimée</span>
-    <button id="undoBtn">Annuler</button>
+    <span data-i18n="toast_task_deleted">Tâche supprimée</span>
+    <button id="undoBtn" data-i18n="toast_undo">Annuler</button>
   </div>
 
+  <script src="i18n.js"></script>
   <script src="renderer.js"></script>
 </body>
 </html>

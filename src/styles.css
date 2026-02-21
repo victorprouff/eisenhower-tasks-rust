@@ -771,6 +771,30 @@ body.dark-theme .theme-toggle:hover {
   border-color: #007aff;
 }
 
+.settings-lang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.lang-switcher { display: flex; gap: 6px; }
+.lang-btn {
+  padding: 3px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  background: transparent;
+  color: var(--text-secondary);
+}
+.lang-btn.active {
+  background: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+
 .settings-modal-buttons {
   justify-content: space-between;
 }
