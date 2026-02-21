@@ -6,7 +6,19 @@ let undoPending = null; // { task, index, timeout }
 function getDefaultQuadrantNames() {
   return [t('q1_default'), t('q2_default'), t('q3_default'), t('q4_default')];
 }
+function getDefaultQuadrantColors() {
+  return ['#dc2626', '#007aff', '#ea580c', '#0d9488'];
+}
 let quadrantNames = null;
+let quadrantColors = null;
+let _savedColors = null; // snapshot à l'ouverture de la modale
+
+const PRESET_COLORS = [
+  '#dc2626', '#e11d48', '#db2777', '#7c3aed',
+  '#2563eb', '#007aff', '#0d9488', '#16a34a',
+  '#65a30d', '#d97706', '#ea580c', '#64748b',
+  '#ffffff',
+];
 
 // Éléments DOM
 const taskInput = document.getElementById('taskInput');
@@ -100,27 +112,42 @@ function setupEventListeners() {
 
   // Settings
   document.getElementById('settingsBtn').addEventListener('click', () => {
-    document.getElementById('qName1').value = quadrantNames[0];
-    document.getElementById('qName2').value = quadrantNames[1];
-    document.getElementById('qName3').value = quadrantNames[2];
-    document.getElementById('qName4').value = quadrantNames[3];
+    _savedColors = [...quadrantColors];
+    for (let i = 0; i < 4; i++)
+      document.getElementById(`qName${i + 1}`).value = quadrantNames[i];
+    buildColorPalettes();
     document.getElementById('settingsOverlay').classList.add('visible');
   });
   document.getElementById('settingsCancel').addEventListener('click', () => {
+    quadrantColors = [..._savedColors];
+    applyQuadrantColors();
+    _savedColors = null;
     document.getElementById('settingsOverlay').classList.remove('visible');
   });
   document.getElementById('settingsReset').addEventListener('click', () => {
     getDefaultQuadrantNames().forEach((name, i) => {
       document.getElementById(`qName${i + 1}`).value = name;
     });
+    quadrantColors = getDefaultQuadrantColors();
+    applyQuadrantColors();
+    buildColorPalettes();
+  });
+
+  // Reset individuel par quadrant
+  document.querySelector('.settings-fields').addEventListener('click', (e) => {
+    const btn = e.target.closest('.quadrant-reset-btn');
+    if (!btn) return;
+    const qi = parseInt(btn.dataset.quadrantIndex);
+    document.getElementById(`qName${qi + 1}`).value = getDefaultQuadrantNames()[qi];
+    quadrantColors[qi] = getDefaultQuadrantColors()[qi];
+    applyQuadrantColors();
+    rebuildPalette(document.querySelector(`.color-palette[data-quadrant="${qi + 1}"]`), qi);
   });
   document.getElementById('settingsSave').addEventListener('click', async () => {
-    quadrantNames = [
-      document.getElementById('qName1').value.trim() || quadrantNames[0],
-      document.getElementById('qName2').value.trim() || quadrantNames[1],
-      document.getElementById('qName3').value.trim() || quadrantNames[2],
-      document.getElementById('qName4').value.trim() || quadrantNames[3],
-    ];
+    quadrantNames = [1, 2, 3, 4].map(i =>
+      document.getElementById(`qName${i}`).value.trim() || quadrantNames[i - 1]
+    );
+    _savedColors = null;
     await saveSettings();
     document.getElementById('settingsOverlay').classList.remove('visible');
   });
@@ -546,14 +573,55 @@ async function loadTasks() {
   }
 }
 
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function applyQuadrantColors() {
+  quadrantColors.forEach((color, i) => {
+    document.documentElement.style.setProperty(`--q${i + 1}-color`, color);
+    document.documentElement.style.setProperty(`--q${i + 1}-color-bg`, hexToRgba(color, 0.12));
+  });
+}
+
+function rebuildPalette(palette, qi) {
+  palette.innerHTML = '';
+  PRESET_COLORS.forEach(color => {
+    const btn = document.createElement('button');
+    btn.className = 'color-swatch' + (quadrantColors[qi] === color ? ' active' : '');
+    btn.style.background = color;
+    btn.dataset.color = color;
+    btn.addEventListener('click', () => {
+      quadrantColors[qi] = color;
+      applyQuadrantColors();
+      palette.querySelectorAll('.color-swatch').forEach(s =>
+        s.classList.toggle('active', s.dataset.color === color)
+      );
+    });
+    palette.appendChild(btn);
+  });
+}
+
+function buildColorPalettes() {
+  document.querySelectorAll('.color-palette').forEach(palette => {
+    rebuildPalette(palette, parseInt(palette.dataset.quadrant) - 1);
+  });
+}
+
 async function loadSettings() {
   try {
     const s = await window.__TAURI__.core.invoke('load_settings');
     quadrantNames = s.quadrant_names;
+    quadrantColors = s.quadrant_colors;
   } catch (e) {
     quadrantNames = getDefaultQuadrantNames();
+    quadrantColors = getDefaultQuadrantColors();
   }
   applyQuadrantNames();
+  applyQuadrantColors();
 }
 
 function applyQuadrantNames() {
@@ -564,20 +632,23 @@ function applyQuadrantNames() {
 
 function resetQuadrantNamesToDefaults() {
   quadrantNames = getDefaultQuadrantNames();
+  quadrantColors = getDefaultQuadrantColors();
   for (let i = 0; i < 4; i++) {
     const input = document.getElementById(`qName${i + 1}`);
     if (input) input.value = quadrantNames[i];
   }
   saveSettings();
   applyQuadrantNames();
+  applyQuadrantColors();
 }
 
 async function saveSettings() {
   try {
     await window.__TAURI__.core.invoke('save_settings', {
-      settings: { quadrant_names: quadrantNames }
+      settings: { quadrant_names: quadrantNames, quadrant_colors: quadrantColors }
     });
     applyQuadrantNames();
+    applyQuadrantColors();
   } catch (e) {
     console.error('Erreur sauvegarde settings:', e);
   }

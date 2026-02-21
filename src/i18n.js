@@ -70,7 +70,9 @@ const translations = {
     export_q4: 'À piocher si on a le temps et envie',
 
     // Modale settings
-    settings_title: 'Paramètres des quadrants',
+    settings_title: 'Paramètres',
+    settings_general: 'Général',
+    settings_quadrants_section: 'Quadrants',
     settings_q1_label: 'Quadrant 1 — Urgent & Important',
     settings_q2_label: 'Quadrant 2 — Important & Non urgent',
     settings_q3_label: 'Quadrant 3 — Urgent & Non important',
@@ -159,7 +161,9 @@ const translations = {
     export_q4: 'Do if time and interest',
 
     // Modale settings
-    settings_title: 'Quadrant settings',
+    settings_title: 'Settings',
+    settings_general: 'General',
+    settings_quadrants_section: 'Quadrants',
     settings_q1_label: 'Quadrant 1 — Urgent & Important',
     settings_q2_label: 'Quadrant 2 — Important & Not urgent',
     settings_q3_label: 'Quadrant 3 — Urgent & Not important',
@@ -248,7 +252,9 @@ const translations = {
     export_q4: 'Hacer si hay tiempo e interés',
 
     // Modale settings
-    settings_title: 'Configuración de cuadrantes',
+    settings_title: 'Configuración',
+    settings_general: 'General',
+    settings_quadrants_section: 'Cuadrantes',
     settings_q1_label: 'Cuadrante 1 — Urgente & Importante',
     settings_q2_label: 'Cuadrante 2 — Importante & No urgente',
     settings_q3_label: 'Cuadrante 3 — Urgente & No importante',
@@ -337,7 +343,9 @@ const translations = {
     export_q4: 'Erledigen wenn Zeit und Lust',
 
     // Modale settings
-    settings_title: 'Quadranteneinstellungen',
+    settings_title: 'Einstellungen',
+    settings_general: 'Allgemein',
+    settings_quadrants_section: 'Quadranten',
     settings_q1_label: 'Quadrant 1 — Dringend & Wichtig',
     settings_q2_label: 'Quadrant 2 — Wichtig & Nicht dringend',
     settings_q3_label: 'Quadrant 3 — Dringend & Nicht wichtig',

@@ -7,6 +7,17 @@ use tauri_plugin_updater::UpdaterExt;
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct Settings {
     quadrant_names: [String; 4],
+    #[serde(default = "default_quadrant_colors")]
+    quadrant_colors: [String; 4],
+}
+
+fn default_quadrant_colors() -> [String; 4] {
+    [
+        "#dc2626".into(),
+        "#007aff".into(),
+        "#ea580c".into(),
+        "#0d9488".into(),
+    ]
 }
 
 impl Default for Settings {
@@ -18,6 +29,7 @@ impl Default for Settings {
                 "Déléguer - Annuler si pas le temps".into(),
                 "À piocher si on en a envie et le temps".into(),
             ],
+            quadrant_colors: default_quadrant_colors(),
         }
     }
 }
