@@ -1,49 +1,43 @@
 # EisenApp
 
-Application de gestion de tâches basée sur la **Matrice d'Eisenhower**, construite avec [Tauri](https://tauri.app/) (backend Rust + frontend web).
+A task management application based on the **Eisenhower Matrix**, built with [Tauri](https://tauri.app/) (Rust backend + web frontend).
 
-## Fonctionnalités
+## Features
 
-- **Matrice 4 quadrants** : Urgent & Important, Important & Non urgent, Urgent & Non important, Non urgent & Non important
-- **Drag & drop** : glisser les tâches depuis la liste vers les quadrants
-- **Liste priorisée** : vue consolidée des tâches par priorité (colonne droite)
-- **Complétion** : cocher/décocher les tâches (barré + opacité réduite)
-- **Suppression** : individuelle ou globale (avec confirmation)
-- **Thème clair/sombre** : bascule avec persistance (localStorage)
-- **Raccourci clavier** : `Cmd/Ctrl+N` pour focus sur l'input
-- **Persistance** : sauvegarde JSON sur disque (app data dir)
-- **Mises à jour automatiques** : vérification au démarrage + bouton 🔄 dans la barre de titre
-- **Édition inline** : double-cliquer sur une tâche pour modifier son texte (Entrée pour valider, Échap pour annuler)
-- **Import de tâches** : importer une liste depuis un fichier `.txt`/`.md` (bouton, drag & drop sur la fenêtre, ou coller une liste multiligne). Supporte le format markdown (`- [ ]`, `- [x]`, `-`)
-- **Export markdown** : exporter la liste priorisée en `.md` (copie presse-papier ou sauvegarde avec boîte de dialogue native)
-
-## TODO :
-
-- Pouvoir rajouter une date et une heure au tâche. Valeur modifiable
-- Pouvoir rajouter une durée
-- Rajouter settings pour modifier couleurs de l'interface
-- Depuis les settings pouvoir personnaliser les différents titres des catégories
-- Gérer le multilingue
+- **4-quadrant matrix**: Urgent & Important, Important & Not urgent, Urgent & Not important, Not urgent & Not important
+- **Drag & drop**: move tasks from the list to any quadrant
+- **Priority list**: consolidated view of tasks by priority (right sidebar)
+- **Completion**: check/uncheck tasks (strikethrough + reduced opacity)
+- **Deletion**: individual or bulk (with confirmation), with 10-second undo
+- **Light/dark theme**: toggle with persistence (localStorage)
+- **Keyboard shortcut**: `Cmd/Ctrl+N` to focus the input
+- **Persistence**: JSON saved to disk (app data dir)
+- **Auto-updates**: checked at startup + banner in the title bar
+- **Inline editing**: double-click a task to edit its text (Enter to confirm, Escape to cancel)
+- **Task import**: import a list from a `.txt`/`.md` file (button, drag & drop onto the window, or paste a multi-line list). Supports markdown format (`- [ ]`, `- [x]`, `-`)
+- **Markdown export**: export the priority list as `.md` (clipboard copy or save with native file dialog)
+- **Multilingual**: French, English, Spanish, German — auto-detected from system language, persisted across sessions
 
 ## Architecture
 
 ```
 eisenhower-tasks-rust/
 ├── src-tauri/
-│   ├── Cargo.toml           # Dépendances Rust (tauri, serde, serde_json)
-│   ├── tauri.conf.json       # Config Tauri (fenêtre, bundle, identifiant)
-│   ├── build.rs              # Script de build Tauri
+│   ├── Cargo.toml           # Rust dependencies (tauri, serde, serde_json)
+│   ├── tauri.conf.json      # Tauri config (window, bundle, identifier)
+│   ├── build.rs             # Tauri build script
 │   └── src/
-│       ├── main.rs           # Point d'entrée
-│       └── lib.rs            # Commands Tauri : load_tasks, save_tasks, check_for_updates, install_update, save_markdown
-├── src/                      # Frontend
-│   ├── index.html            # Interface (matrice + sidebars)
-│   ├── styles.css            # Styles (thème clair/sombre, animations)
-│   └── renderer.js           # Logique applicative (drag & drop, rendu, API)
-└── package.json              # npm + Tauri CLI
+│       ├── main.rs          # Entry point
+│       └── lib.rs           # Tauri commands: load_tasks, save_tasks, check_for_updates, install_update, save_markdown
+├── src/                     # Frontend
+│   ├── index.html           # UI (matrix + sidebars)
+│   ├── styles.css           # Styles (light/dark theme, animations)
+│   ├── i18n.js              # Translations (FR, EN, ES, DE)
+│   └── renderer.js          # App logic (drag & drop, rendering, API)
+└── package.json             # npm + Tauri CLI
 ```
 
-## Prérequis
+## Requirements
 
 - [Rust](https://rustup.rs/) (stable)
 - [Node.js](https://nodejs.org/) (v18+)
@@ -55,7 +49,7 @@ cd eisenhower-tasks-rust
 npm install
 ```
 
-## Développement
+## Development
 
 ```bash
 npm run tauri:dev
@@ -67,23 +61,23 @@ npm run tauri:dev
 npm run tauri:build
 ```
 
-Les bundles sont générés dans `src-tauri/target/release/bundle/` :
+Bundles are generated in `src-tauri/target/release/bundle/`:
 
-- **macOS** : `.app` + `.dmg`
-- **Windows** : NSIS installer
-- **Linux** : AppImage + `.deb`
+- **macOS**: `.app` + `.dmg`
+- **Windows**: NSIS installer
+- **Linux**: AppImage + `.deb`
 
-## Télécharger
+## Download
 
-Les releases sont disponibles sur la [page GitHub Releases](https://github.com/victorprouff/eisenapp/releases). L'application se met à jour automatiquement dès qu'une nouvelle version est publiée.
+Releases are available on the [GitHub Releases page](https://github.com/victorprouff/eisenapp/releases). The app updates automatically when a new version is published.
 
-### macOS — premier lancement
+### macOS — first launch
 
-L'app n'étant pas notarisée par Apple, Gatekeeper bloque l'exécution au premier lancement. Deux options :
+The app is not notarized by Apple, so Gatekeeper blocks it on first launch. Two options:
 
-**Option 1 — clic droit**
+**Option 1 — right-click**
 
-Clic droit sur l'app → **Ouvrir** → **Ouvrir quand même**. macOS mémorise le choix, l'avertissement ne réapparaît plus.
+Right-click the app → **Open** → **Open Anyway**. macOS remembers the choice and won't ask again.
 
 **Option 2 — Terminal**
 
@@ -91,15 +85,15 @@ Clic droit sur l'app → **Ouvrir** → **Ouvrir quand même**. macOS mémorise 
 xattr -cr "/Applications/Eisenhower Tasks.app"
 ```
 
-## Publier une nouvelle version
+## Publishing a new release
 
-1. Mettre à jour la version dans `src-tauri/tauri.conf.json` :
+1. Update the version in `src-tauri/tauri.conf.json`:
 
     ```json
     "version": "1.x.0",
     ```
 
-2. Commiter, tagger et pousser :
+2. Commit, tag and push:
     ```bash
     git add src-tauri/tauri.conf.json
     git commit -m "chore: bump version to 1.x.0"
@@ -107,4 +101,4 @@ xattr -cr "/Applications/Eisenhower Tasks.app"
     git push origin main && git push origin v1.x.0
     ```
 
-Le workflow GitHub Actions build automatiquement pour macOS (arm64 + x64), Windows et Linux, puis publie la release.
+The GitHub Actions workflow automatically builds for macOS (arm64 + x64), Windows and Linux, then publishes the release.
