@@ -442,21 +442,6 @@ body.dark-theme {
   font-style: italic;
 }
 
-/* Animations */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.task-item {
-  animation: slideIn 0.2s ease-out;
-}
 
 /* Thème sombre : ajuster le hover du bouton de thème */
 body.dark-theme .theme-toggle:hover {
