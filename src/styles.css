@@ -58,7 +58,8 @@ body.dark-theme {
   height: 40px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  padding: 0 8px 0 80px; /* 80px à gauche = espace pour les boutons macOS */
   border-bottom: 1px solid var(--border-color);
   position: fixed;
   top: 0;
@@ -76,15 +77,18 @@ body.dark-theme {
 .theme-toggle {
   -webkit-app-region: no-drag;
   position: absolute;
-  right: 20px;
+  top: 0;
+  right: 8px;
+  height: 40px;
+  display: flex;
+  align-items: center;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 0 10px;
   border-radius: 6px;
   transition: background 0.2s;
-  font-size: 18px;
-  width: auto;
+  color: var(--text-secondary);
 }
 
 .theme-toggle:hover {
@@ -94,14 +98,18 @@ body.dark-theme {
 .clear-tasks {
   -webkit-app-region: no-drag;
   position: absolute;
-  right: 60px;
+  top: 0;
+  right: 52px;
+  height: 40px;
+  display: flex;
+  align-items: center;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 0 10px;
   border-radius: 6px;
   transition: background 0.2s;
-  font-size: 18px;
+  color: var(--text-secondary);
 }
 
 .clear-tasks:hover {

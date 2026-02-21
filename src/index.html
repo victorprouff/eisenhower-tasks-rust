@@ -10,10 +10,16 @@
   <div class="titlebar">
     <span class="titlebar-text"></span>
     <div class="update-banner" id="updateBanner" style="display:none">Mise à jour disponible</div>
-    <button class="clear-tasks" id="clearTasks" title="Supprimer toutes les tâches">🗑️</button>
-    <button class="theme-toggle" id="themeToggle" title="Changer de thème">
-      <span class="theme-icon">🌙</span>
+    <button class="clear-tasks" id="clearTasks" title="Supprimer toutes les tâches">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="1.5" y1="3.5" x2="13.5" y2="3.5"/>
+        <path d="M4.5 3.5V2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v1.5"/>
+        <path d="M3 3.5l.85 8.5a.5.5 0 0 0 .5.5h6.3a.5.5 0 0 0 .5-.5L12 3.5"/>
+        <line x1="5.75" y1="6.5" x2="5.75" y2="10.5"/>
+        <line x1="9.25" y1="6.5" x2="9.25" y2="10.5"/>
+      </svg>
     </button>
+    <button class="theme-toggle" id="themeToggle" title="Changer de thème"></button>
   </div>
   <div class="container">
     <!-- Colonne gauche : Ajout de tâches -->

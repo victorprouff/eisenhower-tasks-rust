@@ -491,20 +491,37 @@ document.addEventListener('keydown', (e) => {
 
 // Gestion du thème
 const themeToggle = document.getElementById('themeToggle');
-const themeIcon = themeToggle.querySelector('.theme-icon');
+
+const ICON_SUN = `<svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+  <circle cx="7.5" cy="7.5" r="2.5"/>
+  <line x1="7.5" y1="1" x2="7.5" y2="2.5"/>
+  <line x1="7.5" y1="12.5" x2="7.5" y2="14"/>
+  <line x1="1" y1="7.5" x2="2.5" y2="7.5"/>
+  <line x1="12.5" y1="7.5" x2="14" y2="7.5"/>
+  <line x1="3.2" y1="3.2" x2="4.2" y2="4.2"/>
+  <line x1="10.8" y1="10.8" x2="11.8" y2="11.8"/>
+  <line x1="11.8" y1="3.2" x2="10.8" y2="4.2"/>
+  <line x1="4.2" y1="10.8" x2="3.2" y2="11.8"/>
+</svg>`;
+
+const ICON_MOON = `<svg width="15" height="15" viewBox="0 0 15 15" fill="currentColor" stroke="none">
+  <path d="M7.5 1a6.5 6.5 0 1 0 0 13A6.5 6.5 0 0 0 7.5 1zm0 1a5.5 5.5 0 0 1 3.9 9.4A5 5 0 0 1 5 4.1 5.5 5.5 0 0 1 7.5 2z"/>
+</svg>`;
 
 // Charger le thème sauvegardé
 const savedTheme = localStorage.getItem('theme') || 'dark';
 if (savedTheme === 'dark') {
   document.body.classList.add('dark-theme');
-  themeIcon.textContent = '☀️';
+  themeToggle.innerHTML = ICON_SUN;
+} else {
+  themeToggle.innerHTML = ICON_MOON;
 }
 
 // Basculer le thème
 themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark-theme');
   const isDark = document.body.classList.contains('dark-theme');
-  themeIcon.textContent = isDark ? '☀️' : '🌙';
+  themeToggle.innerHTML = isDark ? ICON_SUN : ICON_MOON;
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 
