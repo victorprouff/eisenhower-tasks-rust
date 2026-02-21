@@ -1,8 +1,6 @@
-# Eisenhower Tasks (Tauri)
+# EisenApp
 
 Application de gestion de tâches basée sur la **Matrice d'Eisenhower**, construite avec [Tauri](https://tauri.app/) (backend Rust + frontend web).
-
-Portage de la version Electron vers Tauri pour un binaire plus léger et performant.
 
 ## Fonctionnalités
 
@@ -21,7 +19,6 @@ Portage de la version Electron vers Tauri pour un binaire plus léger et perform
 
 ## TODO :
 
-- Créer un change log dans github
 - Pouvoir rajouter une date et une heure au tâche. Valeur modifiable
 - Pouvoir rajouter une durée
 - Rajouter settings pour modifier couleurs de l'interface

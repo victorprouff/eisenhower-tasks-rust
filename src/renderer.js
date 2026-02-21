@@ -3,6 +3,13 @@ let tasks = [];
 let draggedTask = null;
 let dragCounter = 0;
 let undoPending = null; // { task, index, timeout }
+const DEFAULT_QUADRANT_NAMES = [
+  "Faire immédiatement",
+  "Planifier",
+  "Déléguer - Annuler si pas le temps",
+  "À piocher si on en a envie et le temps",
+];
+let quadrantNames = [...DEFAULT_QUADRANT_NAMES];
 
 // Éléments DOM
 const taskInput = document.getElementById('taskInput');
@@ -13,6 +20,7 @@ const dropZones = document.querySelectorAll('.quadrant-tasks');
 // Initialisation
 document.addEventListener('DOMContentLoaded', async () => {
   await loadTasks();
+  await loadSettings();
   setupEventListeners();
   render();
 });
@@ -87,6 +95,33 @@ function setupEventListeners() {
       e.preventDefault();
       handleFileImport(e.dataTransfer.files[0]);
     }
+  });
+
+  // Settings
+  document.getElementById('settingsBtn').addEventListener('click', () => {
+    document.getElementById('qName1').value = quadrantNames[0];
+    document.getElementById('qName2').value = quadrantNames[1];
+    document.getElementById('qName3').value = quadrantNames[2];
+    document.getElementById('qName4').value = quadrantNames[3];
+    document.getElementById('settingsOverlay').classList.add('visible');
+  });
+  document.getElementById('settingsCancel').addEventListener('click', () => {
+    document.getElementById('settingsOverlay').classList.remove('visible');
+  });
+  document.getElementById('settingsReset').addEventListener('click', () => {
+    DEFAULT_QUADRANT_NAMES.forEach((name, i) => {
+      document.getElementById(`qName${i + 1}`).value = name;
+    });
+  });
+  document.getElementById('settingsSave').addEventListener('click', async () => {
+    quadrantNames = [
+      document.getElementById('qName1').value.trim() || quadrantNames[0],
+      document.getElementById('qName2').value.trim() || quadrantNames[1],
+      document.getElementById('qName3').value.trim() || quadrantNames[2],
+      document.getElementById('qName4').value.trim() || quadrantNames[3],
+    ];
+    await saveSettings();
+    document.getElementById('settingsOverlay').classList.remove('visible');
   });
 
   // Export
@@ -507,6 +542,33 @@ async function loadTasks() {
     }
   } catch (e) {
     console.error('Erreur de chargement:', e);
+  }
+}
+
+async function loadSettings() {
+  try {
+    const s = await window.__TAURI__.core.invoke('load_settings');
+    quadrantNames = s.quadrant_names;
+  } catch (e) {
+    // garder les défauts
+  }
+  applyQuadrantNames();
+}
+
+function applyQuadrantNames() {
+  document.querySelectorAll('.quadrant h3').forEach((el, i) => {
+    el.textContent = quadrantNames[i];
+  });
+}
+
+async function saveSettings() {
+  try {
+    await window.__TAURI__.core.invoke('save_settings', {
+      settings: { quadrant_names: quadrantNames }
+    });
+    applyQuadrantNames();
+  } catch (e) {
+    console.error('Erreur sauvegarde settings:', e);
   }
 }
 

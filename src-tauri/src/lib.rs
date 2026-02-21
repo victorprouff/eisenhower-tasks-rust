@@ -5,6 +5,41 @@ use tauri::{Emitter, Manager};
 use tauri_plugin_updater::UpdaterExt;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+struct Settings {
+    quadrant_names: [String; 4],
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        Settings {
+            quadrant_names: [
+                "Faire immédiatement".into(),
+                "Planifier".into(),
+                "Déléguer - Annuler si pas le temps".into(),
+                "À piocher si on en a envie et le temps".into(),
+            ],
+        }
+    }
+}
+
+#[tauri::command]
+fn load_settings(app: tauri::AppHandle) -> Settings {
+    let path = app.path().app_data_dir().unwrap().join("settings.json");
+    fs::read_to_string(&path)
+        .ok()
+        .and_then(|s| serde_json::from_str(&s).ok())
+        .unwrap_or_default()
+}
+
+#[tauri::command]
+fn save_settings(app: tauri::AppHandle, settings: Settings) -> Result<(), String> {
+    let dir = app.path().app_data_dir().unwrap();
+    fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    let json = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
+    fs::write(dir.join("settings.json"), json).map_err(|e| e.to_string())
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct Task {
     id: String,
     text: String,
@@ -187,7 +222,9 @@ pub fn run() {
             save_tasks,
             check_for_updates,
             install_update,
-            save_markdown
+            save_markdown,
+            load_settings,
+            save_settings
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
