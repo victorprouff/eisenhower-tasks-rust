@@ -194,6 +194,14 @@ body.dark-theme {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.unassigned-tasks.drag-over {
+  border-color: #007aff;
+  background: #f0f7ff;
 }
 
 .unassigned-tasks h3 {

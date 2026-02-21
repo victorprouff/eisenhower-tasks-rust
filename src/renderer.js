@@ -32,6 +32,12 @@ function setupEventListeners() {
     zone.addEventListener('dragleave', handleDragLeave);
   });
 
+  // Drag & Drop vers la zone non assignée
+  const unassignedZone = document.querySelector('.unassigned-tasks');
+  unassignedZone.addEventListener('dragover', handleDragOver);
+  unassignedZone.addEventListener('drop', handleDrop);
+  unassignedZone.addEventListener('dragleave', handleDragLeave);
+
   // Supprimer toutes les tâches
   document.getElementById('clearTasks').addEventListener('click', removeAllTasks);
 
@@ -370,63 +376,51 @@ function handleDragEnd(e) {
   e.target.classList.remove('dragging');
   draggedTask = null;
 
-  // Retirer l'état drag-over de tous les quadrants
-  document.querySelectorAll('.quadrant').forEach(q => {
-    q.classList.remove('drag-over');
+  document.querySelectorAll('.quadrant, .unassigned-tasks').forEach(el => {
+    el.classList.remove('drag-over');
   });
 }
 
 function handleDragOver(e) {
-  if (e.preventDefault) {
-    e.preventDefault();
-  }
+  if (e.preventDefault) e.preventDefault();
 
   e.dataTransfer.dropEffect = 'move';
 
-  // Ajouter l'effet visuel au quadrant
-  const quadrant = e.target.closest('.quadrant');
-  if (quadrant) {
-    quadrant.classList.add('drag-over');
-  }
+  const dropTarget = e.target.closest('.quadrant, .unassigned-tasks');
+  if (dropTarget) dropTarget.classList.add('drag-over');
 
   return false;
 }
 
 function handleDragLeave(e) {
-  const quadrant = e.target.closest('.quadrant');
-  if (quadrant && !quadrant.contains(e.relatedTarget)) {
-    quadrant.classList.remove('drag-over');
+  const dropTarget = e.target.closest('.quadrant, .unassigned-tasks');
+  if (dropTarget && !dropTarget.contains(e.relatedTarget)) {
+    dropTarget.classList.remove('drag-over');
   }
 }
 
 function handleDrop(e) {
-  if (e.stopPropagation) {
-    e.stopPropagation();
-  }
-
+  if (e.stopPropagation) e.stopPropagation();
   e.preventDefault();
+
+  const dropTarget = e.target.closest('.quadrant, .unassigned-tasks');
+  if (dropTarget) dropTarget.classList.remove('drag-over');
 
   if (e.dataTransfer.files.length > 0) {
     handleFileImport(e.dataTransfer.files[0]);
     dragCounter = 0;
     document.getElementById('fileDropOverlay').classList.remove('visible');
-    const quadrant = e.target.closest('.quadrant');
-    if (quadrant) quadrant.classList.remove('drag-over');
     return false;
   }
-
-  const quadrant = e.target.closest('.quadrant');
-  quadrant.classList.remove('drag-over');
 
   if (draggedTask) {
     const taskId = draggedTask.dataset.taskId;
     const dropZone = e.target.closest('[data-drop-zone]');
-    const quadrantNumber = dropZone ? parseInt(dropZone.dataset.dropZone) : NaN;
+    const zoneValue = dropZone?.dataset.dropZone;
 
-    // Mettre à jour la tâche
     const task = tasks.find(t => t.id === taskId);
     if (task) {
-      task.quadrant = quadrantNumber;
+      task.quadrant = (zoneValue && zoneValue !== 'unassigned') ? parseInt(zoneValue) : null;
       saveTasks();
       render();
     }
