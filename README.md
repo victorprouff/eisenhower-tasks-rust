@@ -2,6 +2,8 @@
 
 A task management application based on the **Eisenhower Matrix**, built with [Tauri](https://tauri.app/) (Rust backend + web frontend).
 
+![Presentation](./doc/presentation.webp)
+
 ## Features
 
 - **4-quadrant matrix**: Urgent & Important, Important & Not urgent, Urgent & Not important, Not urgent & Not important
